@@ -1,7 +1,8 @@
 [package]
-name = "your-github-user/package-name"
+name = "4812571/loader"
 version = "0.1.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
 [dependencies]
+Promise = "evaera/promise@4.0.0"

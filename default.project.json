@@ -1,8 +1,7 @@
 {
-    "name": "your-project-name",
+    "name": "loader",
 
     "tree": {
-        "$className": "ModuleScript",
         "$path": "src"
     }
 }
