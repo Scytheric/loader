@@ -45,15 +45,18 @@ type PredicateFn = (module: ModuleScript) -> boolean
 ]=]
 function Loader.LoadChildren(parent: Instance, predicate: PredicateFn?): { [string]: any }
 	local modules: { [string]: any } = {}
+
 	for _, child in parent:GetChildren() do
 		if child:IsA("ModuleScript") then
 			if predicate and not predicate(child) then
 				continue
 			end
+
 			local m = require(child)
 			modules[child.Name] = m
 		end
 	end
+
 	return modules
 end
 
@@ -75,15 +78,18 @@ end
 ]=]
 function Loader.LoadDescendants(parent: Instance, predicate: PredicateFn?): { [string]: any }
 	local modules: { [string]: any } = {}
+
 	for _, descendant in parent:GetDescendants() do
 		if descendant:IsA("ModuleScript") then
 			if predicate and not predicate(descendant) then
 				continue
 			end
+
 			local m = require(descendant)
 			modules[descendant.Name] = m
 		end
 	end
+
 	return modules
 end
 
@@ -132,8 +138,9 @@ function Loader.SpawnAll(loadedModules: { [string]: any }, methodName: string)
 
         if type(method) == "function" then
             table.insert(promises, Promise.try(function()
-                debug.setmemorycategory(name)
-                method(mod)
+                debug.setmemorycategory(name .. " - " .. methodName)
+					 debug.profilebegin(name .. " - " .. methodName)
+                method(name, mod)
             end))
         end
     end
