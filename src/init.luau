@@ -139,17 +139,17 @@ function Loader.SpawnAll(loadedModules: { [string]: any }, methodName: string)
 		if type(method) == "function" then
 			table.insert(
 				promises,
-				Promise.try(function(resolve: (moduleName: string, module: { [string]: any }) -> ())
+				Promise.try(function()
 					debug.setmemorycategory(name .. " - " .. methodName)
 					debug.profilebegin(name .. " - " .. methodName)
 
 					method(mod)
 
 					-- Debugging purposes.
-					resolve(name, mod)
+					return name, mod
 				end)
 				:catch(function(err: string)
-					warn(`Failed to call method '{methodName} because: {err}`)
+					warn(`Failed to call method '{methodName}' because:\n{err}`)
 				end)
 			)
 		end
