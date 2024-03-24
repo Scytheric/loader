@@ -131,21 +131,31 @@ end
 	```
 ]=]
 function Loader.SpawnAll(loadedModules: { [string]: any }, methodName: string)
-    local promises = {}
+	local promises = {}
 
-    for name, mod in loadedModules do
-        local method = mod[methodName]
+	for name, mod in loadedModules do
+		local method = mod[methodName]
 
-        if type(method) == "function" then
-            table.insert(promises, Promise.try(function()
-                debug.setmemorycategory(name .. " - " .. methodName)
-					 debug.profilebegin(name .. " - " .. methodName)
-                method(name, mod)
-            end))
-        end
-    end
+		if type(method) == "function" then
+			table.insert(
+				promises,
+				Promise.try(function(resolve: (moduleName: string, module: { [string]: any }) -> ())
+					debug.setmemorycategory(name .. " - " .. methodName)
+					debug.profilebegin(name .. " - " .. methodName)
 
-    return Promise.all(promises)
+					method(mod)
+
+					-- Debugging purposes.
+					resolve(name, mod)
+				end)
+				:catch(function(err: string)
+					warn(`Failed to call method '{methodName} because: {err}`)
+				end)
+			)
+		end
+	end
+
+	return Promise.all(promises)
 end
 
 return Loader
