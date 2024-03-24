@@ -130,7 +130,7 @@ end
 	)
 	```
 ]=]
-function Loader.SpawnAll(loadedModules: { [string]: any }, methodName: string)
+function Loader.SpawnAll(loadedModules: { [string]: any }, methodName: string, debugMode: boolean?)
 	local promises = {}
 
 	for name, mod in loadedModules do
@@ -145,8 +145,11 @@ function Loader.SpawnAll(loadedModules: { [string]: any }, methodName: string)
 
 					method(mod)
 
-					-- Debugging purposes.
-					return name, mod
+					if debugMode then
+						print(`{name} : {methodName}`)
+					end
+
+					return true
 				end)
 				:catch(function(err: string)
 					warn(`Failed to call method '{methodName}' because:\n{err}`)
